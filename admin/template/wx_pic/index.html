@@ -1,0 +1,54 @@
+<div class="page_function">
+  <div class="info">
+    <h3>图文回复列表</h3>
+    <small></small>  </div>
+     <div class="exercise"> 
+   <a href="#">内容列表</a>
+   <?php if(model('user_group')->model_power('wx_pic','add')){ ?>
+   <a href="__URL__/add/type-2">新增文本自定义回复</a>
+   <a href="__URL__/add/type-1">新增图文自定义回复</a><?php } ?></div>
+</div>
+<div class="page_main">
+  <div class="page_table table_list">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <th width="10%"><center>ID</center></th>
+        <th >标题</th>
+        <th >关键词</th>
+        <th >分类</th>
+       
+        <th width="10%"><center>操作</center></th>
+      </tr>
+      <!--foreach:{$list $vo}-->
+      <tr>
+        <td><center>{$vo.id}</center></td>
+        <td>{$vo.title}</td>
+        <td>{$vo.keyword}</td>
+         <td><?php if($vo['type']==1){ ?>图文<?php }else{ ?>文本<?php }?></td>
+        
+        <td><center> <?php if($edit_power){ ?> <a href="__URL__/edit/id-{$vo.id}-type-{$vo.type}">修改</a><?php } ?><?php if($del_power && $vo['id']<>276){ ?> <a href="javascript:void(0);" onclick="del('{$vo.id}', this)">删除</a><?php } ?></center></td>
+      </tr>
+      <!--{/foreach}-->
+    </table>
+  </div>
+</div>
+
+<div class="page_tool">
+  <div class="page">{$page}</div>
+</div>
+
+<script>
+    function del(id, obj) {
+                        var obj;
+                        ajaxpost({
+                            name: '确认要删除本内容吗?确定后无法恢复！',
+                            url: "__URL__/del",
+                            data: {id: id},
+                            tip: 1,
+                            success: function() {
+                                $(obj).parent().parent().parent().remove();
+                            }
+                        });
+                    }
+    
+</script>

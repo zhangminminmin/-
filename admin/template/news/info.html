@@ -1,0 +1,298 @@
+<div id="app" class="page_form" v-cloak>
+    <template>
+        <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card" style="width:70%" v-loading="loading">
+            <el-tab-pane label="{$action_name}" name="first">
+                <el-form ref="form" :model="form" label-width="80px">
+
+                    <el-form-item label="资讯标题">
+                        <el-input v-model="form.title" style="width:500px"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="资讯分类" >
+                        <el-select v-model="sort_id" placeholder="请选择">
+                            <el-option
+                                    v-for="item in options"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <!--新增-->
+                    <el-form-item label="资讯类型" >
+                        <el-radio v-model="form.type"  v-for="item in typeList" :label="item.id" border>{{item.name}}</el-radio>
+                    </el-form-item>
+
+                    <el-form-item label="资讯链接">
+                        <el-input v-model="form.path" style="width:500px"></el-input>
+                    </el-form-item>
+                    <el-form-item label="链接标题">
+                        <el-input v-model="form.path_title" style="width:500px"></el-input>
+                    </el-form-item>
+                    <el-form-item label="素材ID">
+                        <el-input v-model="form.source_id" style="width:500px"></el-input>
+                    </el-form-item>
+                    <!--新增-->
+
+                    <el-form-item label="资讯图片">
+                        <el-upload
+                                action="https://xingtingyi.com/index.php/base/upload"
+                                list-type="picture-card"
+                                :on-remove="uploadRomove"
+                                :on-success="uploadSuccess"
+                                :file-list="form.showList"
+                        >
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                    </el-form-item>
+
+                    <el-form-item label="描述">
+                        <el-input v-model="form.description" type="textarea" style="width:500px"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="排序">
+                        <el-input v-model="form.sort" style="width:500px"></el-input>
+                    </el-form-item>
+
+
+
+                    <el-form-item label="是否热门">
+<!--                        <el-checkbox-group v-model="form.position">-->
+                            <el-radio v-model="form.position" v-for="item in positions" :label="item.id" >{{item.name}}</el-radio>
+<!--                        </el-checkbox-group>-->
+                    </el-form-item>
+
+                    <!-- 新增代码 -->
+                    <el-form-item label="资讯详情">
+                        <div id="ueditor">
+
+                        </div>
+                    </el-form-item>
+                    <!-- 新增代码 -->
+
+                    <el-form-item>
+                        <el-button type="primary" @click="onSubmit">立即提交</el-button>
+                    </el-form-item>
+
+                </el-form>
+            </el-tab-pane>
+            <el-tab-pane label="返回素材列表" name="second" @click="history.go(-1)">返回素材列表</el-tab-pane>
+        </el-tabs>
+    </template>
+</div>
+
+<script type="text/javascript" src="/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="/plugins/ueditor/ueditor.all.min.js"></script>
+<style>
+    .el-form-item__content {
+        line-height: 20px !important;
+    }
+</style>
+<script type="text/javascript">
+
+    new Vue({
+        el:"#app",
+        data() {
+            return {
+                html:"",
+                sort_id: '',
+                loading: false,
+                action:"{$action}",
+                lock:false,
+                options:{$options},//素材类型
+                positions:{$positions},//推荐位
+                typeList:{$typeList},
+                activeName: 'first',
+                form: {
+                    id: '',
+                    title: '',
+                    fileList:[],
+                    showList:[],
+                    description:"",
+                    sort:'',
+                    position:1,
+                    html:"",
+                    type:0,
+                    path:'',
+                    source_id:0,
+                    path_title:'',
+                },
+                fileList:[],
+                info:<?php echo empty($info) ? json_encode(array()) : $info;?>,
+            }
+        },
+
+        mounted: function() {
+            var that = this;
+            // 数据
+            // alert(that.info.hot);
+            if (that.info.id > 0) {
+                that.form.id = that.info.id;
+                that.form.title = that.info.title;
+                that.form.fileList = that.info.imgs;
+                that.form.showList = that.info.imgs;
+                that.form.position = that.info.hot;
+                that.form.html = that.info.content;
+                that.form.description = that.info.description;
+                that.form.sort = that.info.sort;
+                that.form.type = that.info.type;
+                that.form.path = that.info.path;
+                that.form.source_id = that.info.source_id;
+                that.form.path_title = that.info.path_title;
+                that.html = that.info.content;
+                that.sort_id = that.info.sort_id;
+
+            }
+            <!-- 新增代码 -->
+            var ue = UE.getEditor('ueditor',{
+                toolbars: [
+                    [ 'source', '|', 'undo', 'redo', '|', 'forecolor', 'backcolor',
+                        'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'removeformat', 'formatmatch',  'pasteplain',
+                        'fontsize', '|','justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+                        'simpleupload', 'insertimage','|','link', 'unlink' ]
+                ],
+                initialFrameHeight: 600,
+                autoSyncData:false,
+                zIndex:99999,
+                enableAutoSave:false,
+                autoHeightEnabled:false,
+            });
+            ue.ready(function() {
+                //设置编辑器的内容
+                var html = that.form.html;
+                ue.setContent(html);
+            });
+            ue.addListener('contentChange',function(editor){
+                that.html = ue.getContent();
+            });
+
+            <!-- 新增代码 -->
+
+        },
+
+        methods: {
+
+            handleClick(tab, event) {
+                if (tab.name == "second") {
+                    history.go(-1);
+                }
+                return false;
+            },
+
+            onSubmit() {
+                var that = this;
+
+                var formData = new FormData();
+                formData.append("title", that.form.title);
+                var len = that.fileList.length;
+                if (len > 0) {
+                    for(var i=0; i<len; i++) {
+                        formData.append("imgs_"+i, that.fileList[i]['raw']);
+                    }
+                }
+                //
+                var arr = [];
+                if (that.form.fileList.length >0) {
+                    for(var i=0; i < that.form.fileList.length; i++) {
+                        arr.push(that.form.fileList[i]['name']);
+                    }
+                }
+                formData.append("arr", arr);
+                formData.append("id", that.form.id);
+                formData.append("sort", that.form.sort);
+                formData.append("description", that.form.description);
+                formData.append("content", that.html);
+                formData.append("sort_id", that.sort_id);
+                formData.append("hot", that.form.position);
+                formData.append("type", that.form.type);
+                formData.append("path", that.form.path);
+                formData.append("source_id", that.form.source_id);
+                formData.append('path_title', that.form.path_title);
+                // console.log(formData);return;
+
+                let url = that.action == "add" ? "__URL__/addSave" : "__URL__/editSave";
+                $.ajax({url:url, type:'post', data:formData, dataType:'json', processData:false, contentType:false,
+                    success:function (res) {
+                        if (res.ret == 202) {
+                            that.$message.warning(res.msg);
+                        } else {
+                            that.$message.warning(res.msg);
+                            setInterval(function(){
+                                window.location.href="__URL__";return;
+                            },1000);
+                        }
+                    },
+                    error:function (XMLHttpRequest, textStatus, errorThrown) {
+
+                    }
+                })
+            },
+            // 上传成功之后  将图片的二进制码 保存到images中  方便在formdata中提交表单信息
+            uploadSuccess(response, file, fileList) {
+                let that = this;
+                const isJPG =
+                    file['raw']['type'] === 'image/jpeg' ||
+                    file['raw']['type'] === 'image/JPEG' ||
+                    file['raw']['type'] === 'image/jpg'  ||
+                    file['raw']['type'] === 'image/JPG'  ||
+                    file['raw']['type'] === 'image/png'  ||
+                    file['raw']['type'] === 'image/PNG'  ||
+                    file['raw']['type'] === 'image/gif'  ||
+                    file['raw']['type'] === 'image/GIF';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传缩略图片只能是 JPG 、JPEG 、GIF、PNG 格式!');
+                    return;
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传缩略图大小不能超过 2MB!');
+                    return;
+                }
+                // that.fileList = fileList;
+                var len  = fileList.length;
+                if (len > 1) {
+                    this.$message.error('只能上传一张图片');
+                    fileList = fileList.splice(1, len-1);
+                    that.form.showList = fileList;
+                    return false;
+                }
+                console.log(fileList);
+                console.log(file);
+                console.log(that.form.showList);
+                that.fz(fileList);
+
+            },
+
+            // 删除文件的  将文件置空
+            uploadRomove(file, fileList) {
+                let that = this;
+                console.log(fileList);
+                that.fz(fileList);
+            },
+
+            fz(fileList) {
+                var that = this;
+                var len = fileList.length;
+                var a = [];
+                var b = [];
+                if (len > 0) {
+                    for(var i=0; i<len; i++) {
+                        if(fileList[i]['raw'] != undefined) {
+                            a.push(fileList[i]);
+                        }else{
+                            b.push(fileList[i]);
+                        }
+                    }
+                    that.form.fileList = b;
+                    that.fileList = a;
+                    that.form.showList = fileList;
+                }
+            },
+
+
+        }
+
+    })
+</script>

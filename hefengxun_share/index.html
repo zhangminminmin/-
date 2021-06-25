@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<meta content="telephone=no" name="format-detection" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="pragma" content="no-cache" />
+		<title>分享</title>
+		<link rel="stylesheet" href="css/index.css">
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/vue2.60.js"></script>
+		<script type="text/javascript" src="js/font_rem.js"></script>
+		<script type="text/javascript" src="js/html2canvas.min.js"></script>
+		<!-- <script type="text/javascript" src="js/html2canvas.min"></script> -->
+	</head>
+	<body>
+		<div class="overlay" id="app">
+			<div class="hidden-box">
+				<div class="overlay-box">
+					<div class="sign-box" :style="`background-image: url(${signInfo.bg_img})`" id="capture">
+						<div class="content-box">
+							<div class="img-box">
+								<img src="img/icon.png" alt="">
+								<span>{{signInfo.days}}天日签</span>
+							</div>
+							<div class="content">
+								<div class="title">今天我在猩听译平台学习了<span>{{signInfo.days}}</span>天</div>
+								<div class="mt10">我已经听写了<span>{{signInfo.dictationNum}}</span>篇文章</div>
+								<div>制作了<span>{{signInfo.subtitlesNum}}</span>个字幕</div>
+								<div>朗读了<span>{{signInfo.readNum}}</span>篇文章</div>
+								<div>翻译了<span>{{signInfo.translationNum}}</span>篇文章</div>
+								<div>添加了<span>{{signInfo.wordsNum}}</span>个生词</div>
+							</div>
+							<div class="user flex-center">
+								<img :src="signInfo.avatar" alt="">
+								<span>{{signInfo.nickname}}</span>
+							</div>
+							<div class="share-box">
+								<div class="share-item">
+									<div class="item-left">
+										<img src="img/icon.png" alt="">
+									</div>
+									<div class="item-right">
+										<p>猩听译</p>
+										<p>学习打卡，就上猩听译</p>
+									</div>
+								</div>
+								<div class="share-item">
+									<img :src="qrcode" alt="">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 前端展示的图片 -->
+			<div class="pannel">
+				<div class="overlay-box">
+					<div class="pannel-box">
+						<div class="share-img">
+							<img :src="dataURL" alt="">
+						</div>
+
+						<p class="title" style="margin-top: 1.875rem;">我已经在猩听译学习了<span>{{signInfo.days}}</span>天</p>
+						<p style="margin-top: 0.3125rem;">快来和我一起学习吧</p>
+						<div class="flex-bettwen mt70">
+							<div class="btn"><a :href="mainUrl">打开官网</a></div>
+							<div class="btn" style="margin-left: 0.9375rem;"><a :href="appUrl">去APP体验</a></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			const agent = navigator.userAgent
+			const isiOS = !!agent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+			var app = new Vue({
+				el: '#app',
+				data: {
+					signInfo: {},
+					dataURL: "",
+					appUrl: "",
+					qrcode: "",
+					mainUrl: "http://hefengxun2.ahaiba.com"
+				},
+				created() {
+					this.getShareUrl()
+					var params = this.GetRequest()
+					if (params.signInfo) {
+						this.signInfo = JSON.parse(params.signInfo)
+					}
+				},
+				mounted() {
+					
+				},
+				methods: {
+					GetRequest() {
+						var url = decodeURI(this.escape2Html(location.search)); //获取url中"?"符后的字串
+						var theRequest = new Object();
+						if (url.indexOf("?") != -1) {
+							var str = url.substr(1);
+							strs = str.split("&");
+							for (var i = 0; i < strs.length; i++) {
+								theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+							}
+						}
+						return theRequest;
+					},
+					escape2Html(str) {
+					 var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
+					 return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
+					},
+					getShareUrl(){
+						axios({
+						  method: 'post',
+						  url: '/index.php/source/shareInfo'
+						}).then(res=>{
+							if(isiOS) {
+								this.appUrl = res.data.content.info.iosPath
+							}else{
+								this.appUrl = res.data.content.info.anPath
+							}
+							this.qrcode = res.data.content.info.image
+							this.$nextTick(()=>{
+								this.creatImg()
+							})
+						})
+					},
+					creatImg(){
+						var src= this.signInfo.bg_img
+						var img=new Image();
+						img.src=src;
+						img.onload= ()=>{
+							setTimeout(() => {
+								html2canvas(document.querySelector("#capture"), {
+									useCORS: true,
+								}).then(canvas => {
+									let dataURL = canvas.toDataURL("image/png");
+									this.dataURL = dataURL;
+								});
+							}, 100);
+						};
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

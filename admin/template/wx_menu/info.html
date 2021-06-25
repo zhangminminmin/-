@@ -1,0 +1,74 @@
+<div class="page_function">
+  <div class="info">
+    <h3>{$action_name}</h3>
+    <small>使用以下功能进行{$action_name}操作</small> 
+  </div>
+</div>
+<div class="tab" id="tab"> <a class="selected" href="#">{$action_name}</a>
+<?php if(model('user_group')->model_power('wx_menu','visit')){ ?>
+ <a  href="javascript:menuload('__URL__')">返回列表</a>
+ <?php } ?>
+ </div>
+<div class="page_form">
+<form action="__URL__/{$action}_save/time-<?php echo time() ?>-ajax-true" method="post" id="form">
+<div class="page_table form_table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="100" align="right">父级菜单</td>
+      <td width="170"><select name="pid" id="pid">
+					<option selected="selected" value="0">一级分类</option>
+             <!--foreach:{$pidlist $v}-->
+              <option value="{$v.id}" <?php if($info['pid']==$v['id']){ ?> selected <?php } ?>>{$v.title}</option>
+              <!--{/foreach}-->
+					</select></td>
+      <td></td>
+    </tr>      
+    <tr>
+      <td width="100" align="right">主菜单名称</td>
+      <td width="170"><input name="title" type="text"  class="text_value"  value="{$info.title}" reg="\S" msg="主菜单名称不能为空"></td>
+      <td></td>
+    </tr>
+   <tr>
+      <td width="100" align="right">关联关键词</td>
+      <td width="170"><input name="keyword" type="text" class="text_value"  value="{$info.keyword}" > </td>
+      <td></td>
+    </tr>
+       
+      <tr>
+      <td width="100" align="right">外链接url</td>
+      <td colspan="2">
+		<textarea name="url" type="text" class="text_value" rows="7">{$info.url}</textarea>
+		</td>
+    </tr>
+    
+    <tr>
+      <td width="100" align="right">显示</td>
+      <td width="170"><input type="radio" name="is_show" checked="checked" value="1">是&nbsp;
+				<input type="radio" name="is_show" value="0">否&nbsp; </td>
+      <td></td>
+    </tr>
+   <tr>
+      <td width="100" align="right">排序</td>
+      <td width="170"><input name="sort" type="text" class="text_value"  value="{$info.sort}" > </td>
+      <td></td>
+    </tr>
+    
+    
+  </table>
+</div>
+<?php if(model('user_group')->model_power('wx_menu','edit')){ ?>
+<!--普通提交-->
+<div class="form_submit">
+<input name="id" type="hidden" value="{$info.id}" />
+<button type="submit" class="button">保存</button> 
+</div>
+<?php } ?>
+</form>
+</div>
+</div>
+<script type="text/javascript">
+//提交表单
+savelistform({addurl:"__URL__/add/type-1",listurl:"__URL__"});
+
+
+</script>

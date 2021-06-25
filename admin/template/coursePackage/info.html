@@ -1,0 +1,444 @@
+<div id="app" class="page_form" v-cloak>
+    <template>
+        <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card" style="width:70%" v-loading="loading">
+            <el-tab-pane label="{$action_name}" name="first">
+                <el-form ref="form" :model="form" label-width="80px">
+                    <el-form-item label="素材名称">
+                        <el-input v-model="form.title" style="width:500px"></el-input>
+                    </el-form-item>
+<!--                    <el-form-item label="素材类型">-->
+<!--                        <el-radio-group v-model="form.type"  @change="changeType">-->
+<!--                            <el-radio v-for="item in options" :label="item.id" >{{item.name}}</el-radio>-->
+<!--                        </el-radio-group>-->
+<!--                    </el-form-item>-->
+
+                    <el-form-item label="素材描述">
+                <span id="editor3">
+                  <div v-html="form.description"></div>
+                </span>
+                    </el-form-item>
+
+                    <el-form-item label="浏览次数">
+                        <el-input v-model="form.view_count" style="width:500px"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="素材价格">
+                        <el-input placeholder="请输入价格" v-model="form.price" style="width:500px">
+                            <template slot="append">元</template>
+                        </el-input>
+                    </el-form-item>
+
+                    <el-form-item label="购买人数">
+                        <el-input placeholder="请输入购买人数" v-model="form.buynum" style="width:500px">
+                        </el-input>
+                    </el-form-item>
+
+                    <el-form-item label="缩略图">
+                        <el-upload
+                                action="/"
+                                list-type="picture-card"
+                                :on-remove="uploadRomove"
+                                :on-success="uploadSuccess"
+                                :file-list="form.fileList"
+                        >
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                    </el-form-item>
+
+                    <el-form-item label="推荐位">
+                        <el-checkbox-group v-model="form.position">
+                            <el-checkbox v-for="item in positions" :label="item.id" >{{item.name}}</el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+
+                    <el-form-item label="素材分类" >
+                        <el-cascader
+                                style="width:500px"
+                                v-model="form.category"
+                                :options="categorys"
+                        >
+                        </el-cascader>
+                    </el-form-item>
+
+<!--                    <el-form-item label="字幕文件"  v-if="type == 4 || type == 5">-->
+<!--                        <el-upload-->
+<!--                                class="upload-demo"-->
+<!--                                action="/"-->
+<!--                                :on-remove="subtitlesRemove"-->
+<!--                                :on-success="subtitlesUpload"-->
+<!--                                :limit="1"-->
+<!--                                :on-exceed="handleExceed"-->
+<!--                                :file-list="form.subtitles">-->
+<!--                            <el-button size="small" type="primary">点击上传</el-button>-->
+<!--                        </el-upload>-->
+<!--                    </el-form-item>-->
+
+<!--                    <el-form-item label="资源链接" v-if="type==1 || type == 2 || type==4 || type== 5">-->
+<!--                        <el-input v-model="form.source_path" style="width:500px"></el-input>-->
+<!--                    </el-form-item>-->
+
+<!--                    <el-form-item label="生词汇总" v-if="type==1 || type == 2 || type==4 || type== 5">-->
+<!--                <span id="editor">-->
+<!--                  <div v-html="form.words"></div>-->
+<!--                </span>-->
+<!--                    </el-form-item>-->
+
+<!--                    <el-form-item label="提示词" v-if="type==1 || type == 2 || type==4 || type== 5">-->
+<!--                <span id="editor1">-->
+<!--                  <div v-html="form.notice"></div>-->
+<!--                </span>-->
+<!--                    </el-form-item>-->
+
+<!--                    <el-form-item label="标准答案" v-if="type==1 || type == 2 || type==4 || type== 5">-->
+<!--                <span id="editor2">-->
+<!--                  <div v-html="form.answer"></div>-->
+<!--                </span>-->
+<!--                    </el-form-item>-->
+
+<!--                    <el-form-item label="资源链接" v-if="type==1 || type == 2 || type==4 || type== 5">-->
+<!--                        <div style="display: flex; align-items: center"  v-for="(item, i) in form.pathList">-->
+<!--                            <el-input placeholder="输入视频标题"  v-model="item.subtitle" style="width:500px;padding:5px" tabindex="i">-->
+<!--                            </el-input>-->
+<!--                            <el-input placeholder="输入资源链接"  v-model="item.path" style="width:500px;padding:5px" tabindex="i">-->
+<!--                            </el-input>-->
+<!--                            <el-button style="height: 40px" type="primary" icon="el-icon-delete"  @click="delPath(i)">删除</el-button>-->
+
+<!--                        </div>-->
+<!--                        <el-button type="primary" icon="el-icon-circle-plus-outline"  @click="addPath">添加</el-button>-->
+<!--                    </el-form-item>-->
+
+<!--                    <el-form-item label="文本内容"  v-if="form.type == 3 || form.type==4 || form.type== 5">-->
+<!--                        <div style="display: flex; align-items: center" v-for="(item, i) in form.textList">-->
+<!--                            <el-input type="textarea" placeholder="输入文本内容" v-model="item.content" rows="5" style="width:500px;padding:5px"></el-input>-->
+<!--                            <el-button style="height: 40px" type="primary" icon="el-icon-delete"  @click="delText(i)">删除</el-button>-->
+<!--                        </div>-->
+<!--                        <el-button type="primary" icon="el-icon-circle-plus-outline"  @click="addText">添加</el-button>-->
+<!--                    </el-form-item>-->
+
+                    <el-form-item>
+                        <el-button type="primary" @click="onSubmit">立即提交</el-button>
+                        <!-- <el-button>取消</el-button> -->
+                    </el-form-item>
+                </el-form>
+            </el-tab-pane>
+            <el-tab-pane label="返回素材列表" name="second" @click="history.go(-1)">返回素材列表</el-tab-pane>
+        </el-tabs>
+    </template>
+</div>
+
+
+<script type="text/javascript" src="/public/wangEditor/release/wangEditor.min.js"></script>
+<script type="text/javascript" src="/public/wangEditor/release/wangEditor.js"></script>
+<script type="text/javascript">
+
+    new Vue({
+        el:"#app",
+        data() {
+            return {
+                notice:'',
+                words:'',
+                answer:'',
+                description:'',
+                type:1,
+                editShow:false,
+                loading: false,
+                action:"{$action}",
+                lock:false,
+                options:{$options},//素材类型
+                positions:{$positions},//推荐位
+                categorys:{$categorys},
+                images:"",
+                subtitles:"",
+                activeName: 'first',
+                form: {
+                    id: '',
+                    title: '',
+                    view_count: '',
+                    type: 1,
+                    description:'',
+                    position:[],
+                    category:[],
+                    source_path:'',
+                    notice:'',
+                    words:'',
+                    answer:'',
+                    pathList:[],//分段视频链接展示
+                    textList:[], //文本展示
+                    fileList: [], //图片展示
+                    subtitles:[], //字幕文件展示
+                    price:'',
+                    buynum:'',
+                }
+            }
+        },
+
+        updated:function(){
+            let that =this
+
+            this.$nextTick(function(){
+                if(that.type!=3){
+                    that.init();
+                }else{
+                    that.editShow=false
+                }
+            })
+
+        },
+        mounted: function() {
+            var that = this;
+            var info = {$info};
+            if(info.id) {
+                this.form.id = info.id;
+                this.form.title = info.title;
+                this.form.type = info.type;
+                this.type = info.type;
+                this.form.description = info.description;
+                this.description = info.description;
+                this.form.position = info.position;
+                this.form.category = info.category;
+                this.form.source_path = info.source_path;
+                this.form.notice = info.notice;
+                this.notice = info.notice;
+                this.form.words = info.words;
+                this.words = info.words;
+                this.form.answer = info.answer;
+                this.answer = info.answer;
+                this.form.pathList = info.pathList;
+                this.form.textList = info.textList;
+                this.form.fileList = info.fileList;
+                this.form.subtitles = info.subtitles;
+                this.form.view_count = info.view_count;
+                this.form.price = info.price;
+                this.form.buynum = info.buynum;
+            }
+            console.log(this.form);
+
+            this.$nextTick(function(){
+                var E = window.wangEditor
+                let editor3 = new E('#editor3')
+                editor3.customConfig.menus = [
+                    'head',  // 标题
+                    'bold',  // 粗体
+                    'fontSize',  // 字号
+                    'italic',  // 斜体
+                    'underline',  // 下划线
+                    'strikeThrough',  // 删除线
+                    'foreColor',  // 文字颜色
+                ]
+
+                editor3.customConfig.onchange = function (html) {
+                    // html 即变化之后的内容
+                    that.description = html
+
+                }
+                editor3.create()
+                that.init();
+            })
+        },
+
+        methods: {
+            changeType(val){
+                let that =this
+                //if(that.type==3){
+                that.type = val;
+                //}
+            },
+            init(){
+
+                var that = this;
+                if(!this.editShow){
+                    var E = window.wangEditor
+                    let editor = new E('#editor')
+                    let editor1 = new E('#editor1')
+                    let editor2 = new E('#editor2')
+                    that.editorInfo(editor, 1);
+                    that.editorInfo(editor1, 2);
+                    that.editorInfo(editor2, 3);
+                    this.editShow=true
+                }
+
+            },
+
+            editorInfo(editor, id) {
+                var that = this;
+                editor.customConfig.menus = [
+                    'head',  // 标题
+                    'bold',  // 粗体
+                    'fontSize',  // 字号
+                    'italic',  // 斜体
+                    'underline',  // 下划线
+                    'strikeThrough',  // 删除线
+                    'foreColor',  // 文字颜色
+                ]
+
+                editor.customConfig.onchange = function (html) {
+                    // html 即变化之后的内容
+                    if (id == 1) {
+                        that.words = html;
+                    }else if(id == 2) {
+                        that.notice = html;
+                    } else if (id == 3) {
+                        that.answer = html
+                    }
+                }
+                editor.create()
+            },
+
+            handleClick(tab, event) {
+                if (tab.name == "second") {
+                    history.go(-1);
+                }
+                return false;
+            },
+
+            // 上传成功之后  将图片的二进制码 保存到images中  方便在formdata中提交表单信息
+            uploadSuccess(response, file, fileList) {
+                let that = this;
+                const isJPG =
+                    file['raw']['type'] === 'image/jpeg' ||
+                    file['raw']['type'] === 'image/JPEG' ||
+                    file['raw']['type'] === 'image/jpg'  ||
+                    file['raw']['type'] === 'image/JPG'  ||
+                    file['raw']['type'] === 'image/png'  ||
+                    file['raw']['type'] === 'image/PNG'  ||
+                    file['raw']['type'] === 'image/gif'  ||
+                    file['raw']['type'] === 'image/GIF';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传缩略图片只能是 JPG 、JPEG 、GIF、PNG 格式!');
+                    fileList.splice(-1, 1);
+                    return;
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传缩略图大小不能超过 2MB!');
+                    fileList.splice(-1, 1);
+                    return;
+                }
+                fileList[0] = file;
+                that.images = file['raw'];
+                fileList.splice(1, 15);
+            },
+
+            // 删除文件的  将文件置空
+            uploadRomove(file, fileList) {
+                let that = this;
+                that.images = " ";
+            },
+
+            onSubmit() {
+                let that = this;
+                console.log(that.form.category);
+                if (that.lock) {
+                    return false;
+                }
+                that.loading = true;
+                that.lock = true;
+                let param = new FormData();
+                param.append("id", that.form.id);
+                param.append("view_count", that.form.view_count);
+                param.append("title", that.form.title);
+                // param.append("type", that.form.type);
+                param.append("description", that.description);
+                param.append("position", that.form.position);
+                param.append("category", that.form.category);
+                // param.append("source_path", that.form.source_path);
+                // param.append("notice", that.notice);
+                // param.append("words", that.words);
+                // param.append("answer", that.answer);
+                param.append("price", that.form.price);
+                param.append("buynum", that.form.buynum);
+                // for(let i=0; i<that.form.pathList.length; i++) {
+                //     param.append("pathList_"+i, that.form.pathList[i].path);
+                // }
+                //
+                // for(let i=0; i<that.form.pathList.length; i++) {
+                //     param.append("subtitle_"+i, that.form.pathList[i].subtitle);
+                // }
+                // param.append("pathCount", that.form.pathList.length);
+                // param.append("subtitleCount", that.form.pathList.length);
+                //
+                // for(let i=0; i<that.form.textList.length; i++) {
+                //     param.append("textList_"+i, that.form.textList[i].content);
+                // }
+                // param.append("textCount", that.form.textList.length);
+
+                var fileList = that.form.fileList.length == 0 ? "" : that.form.fileList[0]['url'];
+                // var subtitles = that.form.subtitles.length == 0 ? "" : that.form.subtitles[0]['url'];
+
+                param.append("fileList", fileList);
+                // param.append("subtitlesShow", subtitles);
+                param.append("picFile", that.images);
+                // param.append("subtitles", that.subtitles);
+
+                let url = that.action == "add" ? "__URL__/addSave" : "__URL__/editSave";
+                $.ajax({url:url, type:'post', data:param, dataType:'json', processData:false, contentType:false,
+                    success:function (res) {
+                        if (res.ret == 202) {
+                            that.lock = false;
+                            that.loading = false;
+                            that.$message.warning(res.msg);
+                        } else {
+                            that.$message.warning(res.msg);
+                            setInterval(function(){
+                                window.location.href="__URL__";return;
+                            },1000);
+                        }
+                    },
+                    error:function (XMLHttpRequest, textStatus, errorThrown) {
+
+                    }
+                })
+            },
+
+            addText() {
+                let that = this;
+                let content = new Object();
+                content.content = "";
+                that.form['textList'].push(content);
+                console.log(that.form.textList);
+            },
+
+            delText(index) {
+                // alert(index);
+                let that = this;
+                that.form.textList.splice(index, 1);
+            },
+
+            addPath() {
+                let that = this;
+                let path = new Object();
+                path.path = "";
+                path.subtitle = "";
+                that.form['pathList'].push(path);
+            },
+
+            // path删除
+            delPath(index) {
+                // alert(index);
+                let that = this;
+                that.form.pathList.splice(index, 1);
+            },
+            // 上传的字幕文件
+            handleExceed(files, subtitles) {
+                let that = this;
+                that.$message.warning("只能上传一个文件 重新上传请先删除之前上传的文件");
+            },
+
+            subtitlesRemove() {
+                let that = this;
+                that.subtitles = " ";
+            },
+
+            subtitlesUpload(response, files, subtitles) {
+                let that = this;
+                that.subtitles = files['raw'];
+            }
+
+
+
+
+        }
+
+    })
+</script>

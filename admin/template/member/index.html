@@ -1,0 +1,93 @@
+<div class="page_function">
+  <div class="info">
+    <h3>粉丝列表</h3>
+    <small></small>  </div>
+     <div class="exercise"> 
+   <a href="__URL__" >粉丝列表</a>
+   
+   
+   <a href="__URL__/tongbu/" style="background-image: none;color:#666">同步更新</a></div>
+</div>
+<div class="page_main">
+    <div class="page_menu">
+  搜索：
+  <input style="width:100px; height: 15px;" name="search" type="text" class="text_value" id="search" value="<?php echo urldecode($_GET['search']) ?>" placeholder="昵称" />
+  &nbsp;&nbsp;<input type="button"  class="button_small" onclick="javascript:location.href='__URL__/index/search-'+$('#search').val();" value="搜索" />
+    </div>
+  <div class="page_table table_list">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<th width="10%"><center>ID</center></th>
+			<th><center>微信昵称</center></th>
+			<th><center>头像</center></th>
+			<th><center>手机</center></th>
+			<th><center>关注时间</center></th>
+			<th><center>状态</center></th>
+			<th><center>操作</center></th>
+		</tr>
+		<!--foreach:{$list $vo}-->
+		<tr>
+			<td><center>{$vo.id}</center></td> 
+			<td><center>{$vo.name}</center></td>
+			<td><center><?php if($vo['avatar']){ ?><img src="{$vo.avatar}" width="50" height="50"><?php }?></center></td>
+			<td><center>{$vo.tel}</center></td>
+			<td><center>{$php(echo empty($vo['att_date']) ? '授权登陆' : date('Y-m-d H:i:s',$vo['att_date']))}</center></td>
+			<td><center><?php if($vo['status']==1){ ?>正常<?php }else{ ?>已取消关注<?php }?></center></td>
+			<td><center><a href="__URL__/dtongbu/id-{$vo.id}" >同步信息</a>  <br><a href="javascript:shiyongop('{$vo.openid}');">查看openid</a></center></td>
+		</tr>
+		<!--{/foreach}-->
+	</table>
+  </div>
+</div>
+
+<div class="page_tool">
+  <div class="page">共 <b>{$count}</b> 条记录{$page}</div>
+</div>
+<script type="text/javascript" src="/public/js/modal.js"></script><!--弹出层-->
+<style>
+    .modal-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:104;background-color:#000000;opacity:0.6;filter:alpha(opacity=60)}
+    .modal{position:fixed;top:80%;left:40%; margin:200px 0 0 -100px;z-index:105;width:320px;  border:8px solid #747474; border-radius:10px;  background:#747474;border:1px solid #999;border:1px solid rgba(0,0,0,0.3);*border:1px solid #999;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;outline:none;-webkit-box-shadow:0 3px 7px rgba(0,0,0,0.3);-moz-box-shadow:0 3px 7px rgba(0,0,0,0.3);box-shadow:0 3px 7px rgba(0,0,0,0.3);-webkit-background-clip:padding-box;-moz-background-clip:padding-box;background-clip:padding-box}
+    #signup-modal,.modal{display:none;width:320px; margin:0 auto;background:white;border:5px solid rgba(0,0,0,0.2);margin-left:-150px;border-radius:10px;overflow:hidden;box-shadow:0 1px 0 white inset;margin-top:-467px}
+
+    #signup-modal a:hover,.modal a:hover{text-decoration:none}
+    .modal .close,#signup-modal .close,#login-modal .close,#forgetform .close{position:absolute;top:0;right:0;padding:12px 18px 16px 18px;height:50px;overflow:hidden;opacity:.8; cursor:pointer}
+
+    .tan_c{height:30px; background:#545759; line-height:30px;}
+    .tan_c span.span1{float:left; display:inline; margin-left:5px;}
+    .tan_c span.span1 img{ display:block;  float:left;}
+    .tan_c span.span1 em{font-size:16px; color:#fff;}
+    .tan_r{width:80%; margin:0 auto; padding-bottom:20px;width:82%\9; margin:10px auto\9;}
+    .tan_r span.span3{float:left; display:inline;}
+    .wenzi{/*width:250px; */margin-left:20px;}
+    .wenzi ul li{font-size:18px; color:#535353;}
+    .tan_c span.span2{ cursor:pointer}
+    .tan{width:90%;overflow:hidden;text-align:center; margin:0px auto; font-size: 14px; padding-top: 10px}
+    .tan p{ padding-top: 10px; text-align: left}
+    .sub1{width:100px; height:35px; line-height:35px; color:#fff; background:#F00; border:none; font-family: "microsoft yahei";font-size:15px; border-radius:5px; cursor:pointer }
+    .tan_r1{width:165px;}
+    .tan_r1 p{margin-top:25px;}
+    .tan_r1 h3{color:#0252A7;font-size:18px;height:35px;line-height:35px; font-weight:bold}
+</style>
+<!--弹出框-->
+<div id="signup-modal"  class="modal" style="width:350px;height:100px;">
+    <div class="tan_t">
+        <div class="tan_c">
+            <span class="span1"><em>OpenId</em></span>
+            <span class="span2" style='float:right; padding-right:8px'><img src="/public/images/x1.png" onclick="$('#signup-modal').modal('hide')"></span>
+        </div>
+        <div class="tan" id="oppppp" >       
+                 
+        </div> 
+    </div>
+</div>
+<script>
+     function shiyongop(id) {
+             $("#oppppp").html(id);
+             $("#signup-modal").modal();  
+             }
+     function ckfz(id,name){
+     $("#fz_name").html('昵称：'+name);
+     $('#fzuid').val(id);
+     $("#signup-modal2").modal();   
+}
+</script>

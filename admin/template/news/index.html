@@ -1,0 +1,124 @@
+<div id="app" v-cloak>
+    <div class="page_function">
+        <div class="info">
+            <h3>{$title}列表</h3>
+            <small></small>
+        </div>
+        <div class="exercise">
+            <a href="__URL__" >{$title}列表</a>
+            <a href="__URL__/add" >添加{$title}</a>
+        </div>
+    </div>
+    <div class="page_main">
+        <div class="page_menu">
+            <el-input
+                    placeholder="请输入新闻标题"
+                    v-model="title"
+                    size="medium"
+                    style="width:150px"
+                    clearable>
+            </el-input>
+
+            <!-- <el-select v-model="id" placeholder="请选择" size="medium">
+              <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option> -->
+            </el-select>
+            <el-button type="primary" size="medium" @click="search">搜索</el-button>
+        </div>
+        <div>
+            <template>
+                <el-table
+                        :data="tableData"
+                        style="width: 100%"
+                        max-height="850">
+                    <el-table-column
+                            prop="id"
+                            label="ID"
+                            align="center">
+                    </el-table-column>
+
+                    <el-table-column
+                            prop="sortname"
+                            label="分类"
+                            align="center">
+                    </el-table-column>
+
+                    <el-table-column
+                            prop="title"
+                            label="标题"
+                            align="center">
+                    </el-table-column>
+                    <el-table-column
+                            prop="description"
+                            label="描述"
+                            align="center">
+                    </el-table-column>
+
+
+                    <el-table-column
+                            prop="created_at"
+                            label="创建时间"
+                            align="center">
+                    </el-table-column>
+                    <el-table-column
+                            fixed="right"
+                            label="操作"
+                            align="center">
+                        <template slot-scope="scope">
+                            <el-button type="primary" size="small" @click="edit(scope)" icon="el-icon-edit-outline">修改</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </template>
+        </div>
+    </div>
+    <div class="page_tool">
+        <div class="page">共 <b v-text="{$count}"></b> 条记录{$page}</div>
+    </div>
+    <!-- -->
+</div>
+<script type="text/javascript" src="/public/js/layer/layer.js"></script>
+<script>
+    new Vue({
+        el :"#app",
+        data() {
+            return {
+                tableData: {$list},
+                title:"<?php echo empty($source) ? "" : $source;?>",
+                id: <?php echo intval($id) <= 0 ? "''" : (int)$id;?>,
+            options:{$options},
+        }
+        },
+
+        methods: {
+            search() {
+                let that = this;
+                var id = that.id;
+                var title = that.title;
+                var url = "__URL__/index?1=1";
+                if (title != "" ) {
+                    url += "&title="+title;
+                }
+
+                if (id != "") {
+                    url += "&id="+id;
+                }
+                // alert(url);
+                location.href = url;
+            },
+
+            edit(scope) {
+                let that = this;
+                // console.log(scope);
+                let sid = scope['row']['id'];
+                url = "__URL__/edit?sid="+sid;
+                location.href = url;return;
+            }
+        }
+    })
+</script>
+

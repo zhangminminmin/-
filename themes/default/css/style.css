@@ -1,0 +1,107 @@
+@charset "utf-8";
+/* CSS Document */
+html,body{min-height: 100%;}
+body{max-width:750px!important;margin:0 auto;min-height:100%}
+@charset "utf-8";
+/* CSS Document */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;}
+body,button,input,select,textarea{font-family:'Microsoft YaHei',arial,SimSun,sans-serif,tahoma;}
+body{-webkit-text-size-adjust:none;font-size:62.5%;}
+html{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+input,select,textarea{font-size:100%;}
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;}
+/*表格边框合并，边框距零*/
+table{border-collapse:collapse;border-spacing:0;}
+/*继承父元素的字体系列样式*/
+input,select,textarea,button{font-family:inherit;}
+fieldset,img{border:0 none;}
+iframe{display:block;}
+.overflow{overflow:hidden}
+.display{display:block}
+abbr,acronym{border:none;font-variant:normal;}
+del{text-decoration:line-through;}
+address,caption,cite,code,dfn,em,th,var{font-style:normal;font-weight:500;}
+ol,ul,li{list-style:none;}
+label,dt{font-weight:normal}
+ins{text-decoration:none;}
+img{vertical-align:middle;}
+i{font-style:normal}
+caption,th{text-align:left;}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}
+.clearfix:before,.clearfix:after{content:"";display:table;}
+.clearfix:after{clear:both;overflow:hidden;}
+.clear{clear:both;font-size:0;height:0;overflow:hidden;}
+.fl{float:left;}
+.fr{float:right;}
+
+body{font:14px/1.5 Regular,"Microsoft Yahei",sans-serif;color:#666;-webkit-text-size-adjust:none;font-family:"Microsoft Yahei",!important;background:#F8F8F8;font-size:.28rem;max-width:750px}
+html{font-size:50px}
+a{text-decoration:none;color:#666; cursor:pointer}
+a:hover{text-decoration:none;color:#666}
+a:active,button:active,input:active,select:active,textarea:active{text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:rgba(0, 0, 0, 0);outline:none;}
+a,a:link,a:visited,a:hover,a:active{text-decoration:none;cursor:pointer;outline:none;}
+input[type="button"],input[type="submit"],input[type="reset"]{-webkit-appearance:none;}
+input:focus,textarea:focus{-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-user-modify:read-write-plaintext-only;}
+input::-moz-focus-inner{border:none}
+/*去除点击高亮效果*/
+a,button,input,select,img,label{-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-tap-highlight-color:transparent;outline:medium none;}
+input::-moz-focus-inner{border:none;padding:0;}
+select,input{vertical-align:middle!important;}
+/*去掉苹果的默认UI来渲染按钮*/
+input[type="submit"],input[type="reset"],input[type="button"],button,select{-webkit-appearance:none;}
+/*去掉谷歌默认的黄色聚焦边框*/
+input,button,select,textarea{outline:none;}
+/*取消textarea的拖动改变大小的功能*/
+textarea{resize:none;}
+/*placeholder文本颜色*/
+input::-webkit-input-placeholder,textarea::-webkit-input-placeholder{color:#ccc;}
+input:-moz-placeholder,textarea:-moz-placeholder{color:#ccc;}
+/*html5标签*/
+header,footer,section,article,aside,nav,figure{display:block;}
+/*长英文字母 数字 换行*/
+p{/*word-break:break-all;word-wrap:break-word;*/}
+/*去除默认样式*/
+h1,h2,h3,h4,h5,h6,strong,i,em,address, caption, cite, code, dfn, th, var{font-weight:normal;font-style:normal;}
+/*去除长按a链接弹框*/
+html,body{-webkit-touch-callout:none;}
+/* 设置为100是方便用rem单位计算 */
+.wap{width:95%;margin:0 auto}
+.swap{width:90%;margin:0 auto}
+.em0{color:#3ca531}
+.em1{color:#000}
+.em2{color:#333}
+.em3{color:#999}
+.em4{color:#ff7407}
+.em5{color:#ff0707}
+.em6{color:#ff3335}
+.white-bg{background:#fff}
+.mt5{margin-top:5px;}
+.mt10{margin-top:.1rem!important;}
+.mt20{margin-top:.2rem!important;}
+.mt30{margin-top:.3rem!important;}
+.mt40{margin-top:.4rem!important;}
+.mt60{margin-top:.6rem!important;}
+.mt100{margin-top:1rem!important;}
+.mb10{margin-bottom:0.1rem}
+.border-bottom{border-bottom:1px solid #e8e8e8;}
+.ft18{font-size:.18rem!important}
+.bold{font-weight:600}
+.f12{font-size:.12rem}
+.f16{font-size:.16rem}
+.ft40{font-size:.4rem!important}
+.tr{text-align:right;}
+.tl{text-align:left}
+.tc{text-align:center;}
+.clearfix:after{visibility:hidden;display:block;font-size:0;content: " ";clear:both;height:0;}
+.clearfix{*zoom:1;}
+.noborder{border:0!important; border-radius:0!important}
+.noback{background:none!important;}
+.am_block{display:block;}
+.flex-between{
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+

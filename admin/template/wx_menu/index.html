@@ -1,0 +1,175 @@
+<style>
+    .content {
+        background:none; margin-left:20px; margin-top:20px; border:none; margin-bottom:30px; margin-right: 20px;
+    }
+    TABLE.ListProduct {
+        BORDER-TOP: #d3d3d3 1px solid;
+        MARGIN-TOP: 5px;
+        WIDTH: 100%;
+        MARGIN-BOTTOM: 5px;
+        _border-collapse: collapse;
+    }
+    TABLE.ListProduct TBODY TR:nth-child(2n+1) {
+        background-color: #FCFCFC;
+    }
+    TABLE.ListProduct THEAD TH {
+        BORDER-BOTTOM: #d3d3d3 1px solid;
+        PADDING-BOTTOM: 5px;
+        BACKGROUND-COLOR: #f1f1f1;
+        PADDING-LEFT: 5px;
+        PADDING-RIGHT: 5px;
+        COLOR: #666;
+        FONT-SIZE: 14px;
+        BORDER-TOP: #e3e3e3 1px solid;
+        FONT-WEIGHT: normal;
+        BORDER-RIGHT: #ddd 1px solid;
+        PADDING-TOP: 5px;
+        color: #000000;
+        font-weight: bold;
+    }
+    TABLE.ListProduct TBODY TD {
+        BORDER-BOTTOM: #eee 1px solid;
+        PADDING-BOTTOM: 10px;
+        PADDING-LEFT: 5px;
+        PADDING-RIGHT: 5px;
+        BORDER-RIGHT: #eee 1px solid;
+        PADDING-TOP: 30px;
+        font-size: 12px;
+        _empty-cells: show;
+        word-break: break-all;
+    }
+    .board {
+
+        padding-left: 30px;
+    }
+    .td25{ text-align: center}
+</style>
+<div class="page_function">
+    <div class="info">
+        <h3>自定义菜单</h3>
+        <small>注意：1级菜单最多只能开启3个，2级子菜单最多开启5个!</small>  </div>
+    <div class="exercise">  
+       <?php if(model('user_group')->model_power('wx_menu','add')){ ?> <a href="__URL__/add/">添加菜单</a><?php } ?>
+    </div>
+</div>
+<div class="content">
+
+
+
+
+    <div class="msgWrap form">
+
+
+        <table width="100%" cellspacing="0" cellpadding="0" border="0" class="ListProduct"> 
+            <thead>
+                <tr>
+                    <th style=" width:60px;">显示顺序</th>
+                    <th style=" width:220px;">主菜单名称</th>
+                    <th style=" width:170px;">关联关键词</th>
+                    <th>外链URL</th>
+                    <th class="norightborder" style=" width:160px;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--foreach:{$list $vo}-->
+                <tr class="hover">
+                    <td class="td25">
+                        <span>{$vo.sort}</span>
+                    </td>
+                    <td>
+                        <div>
+                            <span>{$vo.title}</span>
+                        </div>
+                    </td>
+                    <td><span>{$vo.keyword}</span></td>
+                    <td><span><?php if($vo['url'] == false){ ?>无链接地址
+                            <?php }else{?>
+                            {$vo.url}
+
+                            <?php }?></span></td>
+                    <td>
+                        <a  href='__URL__/edit/id-{$vo.id}' >修改</a>
+                        <a  href="javascript:void(0);" onclick="del('{$vo.id}', this)">删除</a>
+                    </td>				
+                </tr>
+                <!--foreach:{$vo['pidlist'] $v}-->
+                <tr class="td29">
+                    <td class="td25" colspan="1">
+                        <span>{$v.sort}</span>
+                    </td>
+                    <td colspan="1">
+                        <div class="board">
+                            <span>├ {$v.title}</span>
+                        </div>
+                    </td>
+
+                    <td colspan="1">
+                        <span>{$v.keyword}</span>
+                    </td>
+                    <td><span>
+                            <?php if($v['url'] == false){ ?>无链接地址
+                            <?php }else{?>
+
+                            {$v.url}
+                            <?php }?>
+                        </span></td>			
+                    <td colspan="1">
+                         <?php if($edit_power){ ?><a  href='__URL__/edit/id-{$v.id}'>修改</a><?php } ?> <?php if($del_power){ ?> <a  href="javascript:void(0);" onclick="del('{$v.id}', this)">删除</a><?php } ?></td>				
+                </tr>	
+                <!--{/foreach}-->
+                <!--{/foreach}-->
+                <tr class="hover">
+                    <td class="td26" colspan="5">
+                        <form action="__URL__/class_send/time-<?php echo time() ?>-ajax-true" method="post" id="form">
+                           <button type="submit" class="button">生成自定义菜单</button>
+                        </form>
+                        <style>
+                            #cdul{
+                                float:left;
+                                color:red;
+                            }
+                        </style>
+
+                        <span style="float:left;" id="cdul">
+
+                            注：<br>
+                            (使用前提是已经拥有了自定义菜单的用户才能够使用，)<br>
+                            第一步:必须先填写【AppId】【 AppSecret】！<br>
+                            第二步:添加菜单，<br>
+                            第三步:点击生成!<br>
+                            注意：1级菜单最多只能开启3个，2级子菜单最多开启5个<br>
+                            官方说明：修改后，需要重新关注，或者最迟隔天才会看到修改后的效果！<br>
+                        </span>
+                    </td>				
+                </tr>
+
+            </tbody>
+        </table>
+
+        <p>
+
+        </p>
+        <div class="clear"></div>
+    </div>
+</div>
+<script type="text/javascript">
+//提交表单
+savelistform({addurl:"__URL__",listurl:"__URL__"});
+
+
+</script>
+<script>
+                            function del(id, obj) {
+                                var obj;
+                                ajaxpost({
+                                    name: '确认要删除本内容吗?确定后无法恢复！',
+                                    url: "__URL__/del",
+                                    data: {id: id},
+                                    tip: 1,
+                                    success: function() {
+                                        $(obj).parent().parent().remove();
+                                    }
+                                });
+                            }
+
+</script>

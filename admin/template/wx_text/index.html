@@ -1,0 +1,46 @@
+<style>
+    
+    .content {
+  background: none;
+  margin-left: 30px;
+  margin-top: 20px;
+  border: none;
+  margin-bottom: 30px;
+}
+    
+</style>
+<div class="content">
+
+    <div class="cLineB">
+        <h4>关注时自动回复内容 </h4>
+    </div>
+    <div class="zdhuifu">
+        <form action="__URL__/{$action}_save/time-<?php echo time() ?>-ajax-true" method="post" id="form">
+          
+
+            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr><td height="5"></td><td></td></tr>
+                <tr>
+                    <td valign="top" width="420"><textarea class="px" style="width:420px; height:300px; margin:5px 0"  id="Hfcontent" name="content">{$info.content}</textarea><p><input name="home" type="radio" value="1" <!--if:{$info['home']==1}--> checked="checked" <!--{/if}--> />是 <input name="home" type="radio" value="0" <!--if:{$info['home']==0}--> checked="checked" <!--{/if}--> />否--若是想关注回复多图，此项必须选择是 </p><p>
+                    关键词：<input type="text" style="width:100px;" class="px" id="keyword" value="{$info.keyword}" name="keyword" style="width:500px" ><br/>例：填写"功能",系统会检索包含最近发布的9条信息<br/></td>
+                <td valign="top">
+                </td>
+                </tr>
+                <tr>
+                    <td height="50">
+                        <input name="id" type="hidden" value="{$info.id}" />
+                        <input type="submit" value="保存"  name="sbmt"   class="button"  />　             
+                    </td><td valign="top"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<div class="clr"></div>
+<script type="text/javascript">
+//提交表单
+savelistform({addurl:"__URL__",listurl:"__URL__"});
+</script>
+
+<!--底部-->

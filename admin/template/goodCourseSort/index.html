@@ -1,0 +1,198 @@
+<style>
+  .custom-tree-node {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-right: 10px;
+    padding-top:10px;
+    padding-bottom: 10px;
+  }
+
+  .el-button--mini, .el-button--mini.is-round {
+    padding: 5px 15px
+  }
+</style>
+<div id="app" v-cloak>
+  <div class="page_function">
+    <div class="info">
+      <h3>{$title}列表</h3>
+      <small></small>  
+    </div>
+    <div class="exercise"> 
+      <a href="__URL__" >{$title}列表</a>
+      <a href="javascript:;" @click="addCategory(1,1)" >添加顶级分类</a>
+    </div>
+  </div>
+  <div class="page_main">
+    <div>
+        <el-tree
+          :data="data"
+          node-key="id"
+          default-expand-all
+          :expand-on-click-node="false">
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span>{{ node.label }}</span>
+            <span>
+              <el-button
+                type="primary"
+                size="mini"
+                icon="el-icon-circle-plus-outline"
+                @click="() => addCategory(node, data)"
+                v-if="node.level < 3">
+                添加
+              </el-button>
+
+              <el-button
+                type="primary"
+                size="mini"
+                icon="el-icon-edit"
+                @click="() => editCategory(node, data)">
+                编辑
+              </el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                icon="el-icon-delete"
+                @click="() => remove(node, data)">
+                删除
+              </el-button>
+            </span>
+          </span>
+        </el-tree>
+    </div>
+
+    <div>
+      <el-dialog
+        :title="item.title"
+        :visible.sync="dialogVisible"
+        width="50%"
+        :before-close="handleClose">
+        <span>
+          <el-input
+            type="hidden"
+            v-model="id"
+            clearable>
+          </el-input>
+          <el-input
+            placeholder="请输入分类名称"
+            v-model="name"
+            clearable
+            v-if="item.status != 3">
+          </el-input>
+          <span v-if="item.status == 3">确定删除此分类吗? 此删除操作不可逆！</span>
+        </span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+  </div>
+
+  <!-- -->
+</div>
+<script type="text/javascript" src="/public/js/layer/layer.js"></script>
+<script>
+    new Vue({
+      el: '#app',
+      data() {
+        const data = <?php echo json_encode($list);?>;
+        return {
+          data: JSON.parse(JSON.stringify(data)),
+          dialogVisible: false,
+          name: '',
+          id: '',
+          item: {
+              title: '',
+              doType: 'add',
+              status: 0, //0  1编辑 2添加  3提示
+          },
+        }
+      },
+
+      methods: {
+        editCategory(node, data) {
+          let that = this;
+          that.dialogVisible = true;
+          that.id = data.id;
+          that.name = data.name;
+          that.item = {
+             title: '编辑分类',
+             doType: "edit",
+             status:1,
+          };
+        },
+
+        addCategory(node, data) {
+          let that = this;
+          that.dialogVisible = true;
+          that.name = '';
+          that.id = (data == 1) ? 0 : data.id;
+          var title = (data == 1) ? '添加顶级分类' : "添加子分类";
+          that.item = {
+            title: title,
+            doType: "add",
+            status: 2
+          };
+        },
+        
+        remove(node, data) {
+          let that = this;
+          that.dialogVisible = true;
+          that.id = data.id;
+          that.item = {
+            title: '删除分类提示',
+            doType: 'del',
+            status: 3,
+          };
+        },
+
+        submit() {
+          let that = this;
+          var url = '';
+          if (that.item.status == 1) {
+
+            url = "__URL__/editSave";
+          } else if (that.item.status == 2) {
+
+            url = "__URL__/addSave";
+          } else if(that.item.status == 3){
+
+            url = "__URL__/delCategory";
+          }
+          
+          var data = {id: that.id, name: that.name};
+          $.post(url, data, function(d){
+            if (d.ret == 202) {
+              that.$message({
+                showClose: true,
+                message: d.msg,
+                type: 'warning'
+              });
+            } else {
+              that.dialogVisible = false;
+              that.data = d.content;
+              that.$message({
+                showClose: true,
+                message: d.msg,
+                type: 'success'
+              });
+            }
+          },"json")
+        },
+
+        handleClose(done) {
+          this.$confirm('确认关闭？')
+            .then(_ => {
+              done();
+            })
+            .catch(_ => {});
+        }
+
+      }
+    })
+
+</script>
+

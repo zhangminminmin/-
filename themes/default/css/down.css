@@ -1,0 +1,66 @@
+.m-container{
+    padding: 0 1rem;
+    text-align: center;
+    height: 100vh;
+    background: #FFF;
+}
+.logo {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: .8rem;
+}
+
+.logo-title {
+    font-size: 16px;
+    font-family: PingFangSC-Semibold, PingFang SC;
+    font-weight: 600;
+    color: rgba(34, 34, 34, 1);
+    margin-bottom: 1.16rem;
+}
+
+.down-btn {
+    width: 5.5rem;
+    height: .96rem;
+    line-height: 0.96rem;
+    background: rgba(255, 222, 2, 1);
+    border-radius: .48rem;
+    font: size .32rem;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: rgba(34, 34, 34, 1);
+}
+.down-btn span{
+    vertical-align: middle;
+    margin-left: .22rem;
+}
+.down-btn img{
+    height: .36rem;
+    width: .36rem;
+    vertical-align: middle;
+}
+.tips {
+    font-size: .26rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: rgba(153, 153, 153, 1);
+}
+
+.qrcode-item .tips {
+    font-size: .24rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: rgba(153, 153, 153, 1);
+}
+.qrcode-item img{
+    width: 2.5rem;
+    height: 2.5rem;
+}
+.upload-container{
+    position: absolute;
+    bottom: .6rem;
+    left: 0rem;
+    background:rgba(255,255,255,1);
+    padding: 0 .95rem;
+    width: 100%;
+    box-sizing: border-box;
+}

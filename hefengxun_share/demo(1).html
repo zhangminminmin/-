@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.css">    
+	<script src="https://unpkg.com/swiper/js/swiper.js"> </script>  
+	<!-- <script src="./vconsole.min.js"></script> -->
+</head>
+<body>
+	<div id="app">
+  		{{ message }}
+  		<div class="swiper-container">
+				<div class="swiper-wrapper">
+<!-- 					<div class="swiper-slide">
+						<img style="width: 100%" src="https://img-blog.csdnimg.cn/20190301125102646.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTAxMDE5OA==,size_16,color_FFFFFF,t_70">
+					</div> -->
+					<div class="swiper-slide">
+						<video autoplay  id="v1" ref="mediaPlayer1" style="width: 100%;" preload="auto" x5-playsinline playsinline webkit-playsinline src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"></video>
+						
+					</div>
+					<div class="swiper-slide">
+						<video autoplay  id="v2" ref="mediaPlayer2" style="width: 100%;" preload="auto" x5-playsinline playsinline webkit-playsinline src="http://vjs.zencdn.net/v/oceans.mp4"></video>
+					</div>
+					
+				</div>
+				<!-- 如果需要分页器 -->
+				<!-- <div class="swiper-pagination" slot="pagination"></div> -->
+		</div>
+	</div>
+	<script type="text/javascript">
+		// var vConsole = new VConsole();
+		var app = new Vue({
+		  el: '#app',
+		  data: {
+		    message: 'Hello Vue!',
+			mediaPlayer1: "",
+			mediaPlayer2: ""
+		  },
+		  mounted(){
+		  	this.swiperInit()
+		  	this.autoPlay(this.$refs.mediaPlayer1)
+		  	this.autoPlayPause(this.$refs.mediaPlayer2)
+		  },
+		  methods: {
+		  	swiperInit() {
+				// swiper
+				var that = this
+				this.mediaPlayer1 = that.$refs.mediaPlayer1
+				this.mediaPlayer2 = that.$refs.mediaPlayer2
+				new Swiper('.swiper-container', {
+					on:{
+					    slideChange: function(){
+					    console.log(this.activeIndex)
+					      if(this.activeIndex == 0){
+					      	if(that.mediaPlayer1.paused){
+					      		that.mediaPlayer1.play()
+					      	}
+					      	if(!that.mediaPlayer2.paused){
+					      		that.mediaPlayer2.pause()
+					      	}
+					      	// that.autoPlay(that.mediaPlayer2)
+					      }else if(this.activeIndex == 1){
+					      	if(that.mediaPlayer2.paused){
+					      		that.mediaPlayer2.play()
+					      	}
+					      	if(!that.mediaPlayer1.paused){
+					      		that.mediaPlayer1.pause()
+					      	}
+					      	// that.autoPlay(that.mediaPlayer1)
+					      }
+					    },
+				  	},
+				})
+			},
+			autoPlay(mediaPlayer){
+				document.addEventListener("WeixinJSBridgeReady", function() {
+					mediaPlayer.play()
+				}, false);
+				document.addEventListener('touchstart', firstTouch);
+				function firstTouch() {
+					mediaPlayer.play()
+					document.removeEventListener('touchstart', firstTouch);
+				}				
+			},
+			// 非第一个swiper自动播放视频
+			autoPlayPause(mediaPlayer){
+				document.addEventListener("WeixinJSBridgeReady", function() {
+					mediaPlayer.play()
+					mediaPlayer.pause()
+				}, false);
+				document.addEventListener('touchstart', firstTouch);
+				function firstTouch() {
+					mediaPlayer.play()
+					mediaPlayer.pause()
+					document.removeEventListener('touchstart', firstTouch);
+				}				
+			}
+		  }
+		})
+	</script>
+</body>
+</html>

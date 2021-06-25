@@ -1,0 +1,209 @@
+<div id="app" v-cloak>
+  <div class="page_function">
+    <div class="info">
+      <h3>{$title}列表</h3>
+      <small></small>  
+    </div>
+    <div class="exercise"> 
+      <a href="__URL__" >{$title}列表</a>
+      <a href="__URL__/add" >添加{$title}</a>
+    </div>
+  </div>
+  <div class="page_main">
+    <div class="page_menu">
+        <el-input
+          placeholder="请输入视频标题"
+          v-model="title"
+          size="medium"
+          style="width:150px"
+          clearable>
+        </el-input>
+
+      <el-select v-model="id" placeholder="请选择" size="medium">
+        <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+        </el-option>
+      </el-select>
+
+      <el-select v-model="pid" placeholder="请选择" size="medium">
+        <el-option
+                v-for="item in package"
+                :key="item.id"
+                :label="item.title"
+                :value="item.id">
+        </el-option>
+      </el-select>
+        <el-button type="primary" size="medium" @click="search">搜索</el-button>
+    </div>
+    <div>
+      <template>
+        <el-table
+          :data="tableData"
+          style="width: 100%"
+          max-height="850">
+          <el-table-column
+            fixed
+            prop="id"
+            label="ID"
+            align="center">
+          </el-table-column>
+          <el-table-column
+                  prop="name"
+                  label="所属分类"
+                  align="center">
+          </el-table-column>
+          <el-table-column
+                  prop="pname"
+                  label="所属套餐"
+                  align="center">
+          </el-table-column>
+          <el-table-column
+            prop="title"
+            label="标题"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="typename"
+            label="类型"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="created_at"
+            label="创建时间"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center">
+            <template slot-scope="scope">
+              <el-button type="primary" size="small" @click="edit(scope)" icon="el-icon-edit-outline">修改</el-button><br><br>
+              <el-button type="primary" size="small" @click="editTime(scope)" icon="el-icon-edit-outline">修改时间</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template> 
+
+      <div>
+        <el-dialog
+          title="修改时间"
+          :visible.sync="dialogVisible"
+          width="50%"
+          :before-close="handleClose">
+          <span>
+            <el-input
+              type="hidden"
+              v-model="sid"
+              clearable>
+            </el-input>
+            <el-date-picker
+              v-model="name"
+              type="datetime"
+              placeholder="选择日期时间"
+              value-format="yyyy-MM-dd HH:mm"
+              format="yyyy-MM-dd HH:mm">
+            </el-date-picker>
+          </span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submit">确 定</el-button>
+          </span>
+        </el-dialog>
+      </div>
+
+
+    </div>
+  </div>
+  <div class="page_tool">
+    <div class="page">共 <b v-text="{$count}"></b> 条记录{$page}</div>
+  </div>
+  <!-- -->
+</div>
+<script type="text/javascript" src="/public/js/layer/layer.js"></script>
+<script>
+    new Vue({
+        el :"#app",
+        data() {
+          return {
+            tableData: {$list},
+            title:"<?php echo empty($source) ? "" : $source;?>",
+            options: {$options},
+            package: {$package},
+            id: <?php echo intval($id) <= 0 ? "''" : (int)$id;?>,
+            pid:'<?php echo intval($pid) <= 0 ? "" : (int)$pid;?>',
+            sid:0,
+            name:'',
+            dialogVisible:false,
+          }
+        },
+
+        methods: {
+          search() {
+            let that = this;
+            var id = that.id;
+            var title = that.title;
+            var pid = that.pid;
+            var url = "__URL__/index?1=1";
+            if (title != "" ) {
+              url += "&title="+title;
+            }
+
+            if (id != "") {
+              url += "&id="+id;
+            }
+            if (pid != "") {
+              url += "&pid="+pid;
+            }
+            // alert(url);
+            location.href = url;
+          },
+
+          edit(scope) {
+            let that = this;
+            // console.log(scope);
+            let sid = scope['row']['id'];
+            url = "__URL__/edit?sid="+sid;
+            location.href = url;return;
+          },
+
+          editTime(scope) {
+            let that = this;
+            that.sid = 0;
+            console.log(scope);
+            let sid = scope['row']['id'];
+            let created_at = scope['row']['created_at'];
+            that.sid = sid;
+            that.name = created_at;
+            that.dialogVisible = true;
+          },
+
+          submit() {
+            var that = this;
+            console.log(that.name);
+            var data = {name:that.name, id:that.sid};
+            $.post('__URL__/editTime', data, function(d){
+              if (d.ret == 202) {
+                layer.msg(d.msg);
+              }else{
+                layer.msg(d.msg);
+                setInterval(function(){
+                  window.location.reload();
+                },500)
+              }
+            },"json") 
+          },
+
+          handleClose(done) {
+            this.$confirm('确认关闭？')
+              .then(_ => {
+                done();
+              })
+              .catch(_ => {});
+          }
+        }
+    })
+</script>
+

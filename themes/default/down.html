@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+<meta content="telephone=no" name="format-detection" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta http-equiv="pragma" content="no-cache" />
+<title>猩听译下载</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/down.css">
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script type="text/javascript" src="js/font_rem.js"></script>
+</head>
+<body>
+<section class="m-container">
+  <img src="img/logo.png" class="logo" alt="">
+  <p class="logo-title mt30">猩听译APP</p>
+  <div class="down-btn">
+    <a href="{$info.anPath}">
+    <img src="img/android.png" alt="">
+    <span>Android下载</span>
+    </a>
+ </div>
+  <div class="down-btn mt30">
+    <a href="{$info.iosPath}">
+    <img src="img/ios.png" alt="">
+    <span>IOS下载</span>
+    </a>
+  </div>
+  <div class="upload-container">
+    <p class="tips">长按保存二维码扫码下载</p>
+    <div class="flex-between mt40">
+        <div class="qrcode-item">
+            <img src="{$info.ancode}" alt="">
+            <p class="tips mt10">安卓用户下载</p>
+        </div>
+        <div class="qrcode-item">
+            <img src="{$info.ioscode}" alt="">
+            <p class="tips mt10">IOS用户下载</p>
+        </div>
+    </div>
+    
+  </div>
+</section>
+</body>
+</html>

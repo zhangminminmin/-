@@ -1,0 +1,106 @@
+<div class="page_function">
+  <div class="info">
+    <h3>{$action_name}</h3>
+    <small>使用以下功能进行{$action_name}操作</small> 
+  </div>
+</div>
+<div class="tab" id="tab"> <a class="selected" href="#">{$action_name}</a>
+<?php if(model('user_group')->model_power('wx_pic','visit')){ ?>
+ <a  href="javascript:menuload('__URL__')">返回列表</a>
+ <?php } ?>
+ </div>
+<div class="page_form">
+<form action="__URL__/{$action}_save/time-<?php echo time() ?>-ajax-true" method="post" id="form">
+<div class="page_table form_table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="100" align="right">类型</td>
+      <td width="170">{$action_name}<input type="hidden" name="type" value="{$info.type}"></td>
+      <td></td>
+    </tr>      
+    <tr>
+      <td width="100" align="right">关键字</td>
+      <td width="170"><input name="keyword" type="text"  class="text_value"  value="{$info.keyword}" reg="\S" msg="关键字不能为空" <?php if( $info['id']==276){ ?>readonly<?php } ?>></td>
+      <td></td>
+    </tr>
+   <tr>
+      <td width="100" align="right">标题</td>
+      <td width="170"><input name="title" type="text" class="text_value"  value="{$info.title}" reg="\S" msg="标题不能为空"> </td>
+      <td></td>
+    </tr>
+       <tr>
+      <td width="100" align="right">简介</td>
+      <td colspan="2"><textarea name="text" class="text_textarea" id="text">{$info.text}</textarea> 
+      限制200字内</td>
+    </tr>
+    <?php if($info['type']==1){?>
+   <tr>
+      <td width="100" align="right">缩略图</td>
+       <td colspan="2">
+                    <?php echo module('editor')->get_image_upload('image1','pic',false,'editor_info') ?>
+                    <input name="pic" type="text" class="text_value" id="pic" style="width:220px; float:left" value="{$info.pic}" reg="\S" msg="缩略图不能为空"/>
+                    &nbsp;&nbsp;<input type="button" id="image1" class="button_small" value="选择图片" />
+                    <input type="button" class="button_small" onclick="get_one_pic()" value="提取第一张图" />
+                </td>
+    </tr>
+  
+    <tr>
+        <td width="100" align="right">内容</td>
+        <td colspan="2">
+          <?php echo module('editor')->get_editor('info'); ?>
+          <textarea name="info" style="width:70%; height:350px;" id="info">{$info.info html}</textarea>
+          <input type="button" onclick="javascript:get_remote_image()" style="margin-top:10px;" class="button_small" value="远程图片本地化" />
+          <?php echo module('editor')->get_editor_upload('editor_upload','editor_info') ?>
+          <input type="button" id="editor_upload" class="button_small" style="margin-top:10px;" value="上传图片和文件到编辑器" />
+      
+          </td>
+      </tr>
+         <tr>
+      <td width="100" align="right">外链网址</td>
+      <td width="170"><input name="url" type="text"  class="text_value"  value="{$info.url}" ></td>
+      <td></td>
+    </tr>
+           <tr>
+      <td width="100" align="right">排序</td>
+      <td width="170"><input name="sort" type="text"  class="text_value"  style="width:50px" value="{$info.sort}" > 数值越大越靠前</td>
+      <td></td>
+    </tr>
+       <?php }?>
+     
+  </table>
+</div>
+<?php if(model('user_group')->model_power('wx_pic','edit') || model('user_group')->model_power('wx_pic','add')){ ?>
+<!--普通提交-->
+<div class="form_submit">
+<input name="id" type="hidden" value="{$info.id}" />
+<button type="submit" class="button">保存</button> 
+</div>
+<?php } ?>
+</form>
+</div>
+</div>
+<script type="text/javascript">
+//提交表单
+savelistform({addurl:"__URL__/add/type-1",listurl:"__URL__"});
+function get_one_pic(){
+	var content=editor_info.html();
+	var imgreg = /<img.*?(?:>|\/>)/gi;
+	var srcreg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+	var arr = content.match(imgreg);
+	var src = arr[0].match(srcreg);
+	$("#pic").val(src[1]);
+	}
+function get_remote_image(){
+	ajaxpost_w({
+		url:'__APP__/editor/get_remote_image',
+		data:{content:editor_info.html()},
+		tip:2,
+		success:function(msg){
+			editor_info.html(msg);
+		},
+		failure:function(){
+		},
+		msg:'远程抓图执行完毕'
+	});
+}
+</script>

@@ -1,0 +1,270 @@
+<div id="app" v-cloak>
+  <div class="page_function">
+    <div class="info">
+      <h3>{$title}列表</h3>
+      <small></small>  
+    </div>
+    <div class="exercise"> 
+      <a href="__URL__" >{$title}列表</a>
+    </div>
+  </div>
+  <div class="page_main">
+    <div class="page_menu">
+      <el-input
+              placeholder="请输入手机号"
+              v-model="mobile"
+              size="medium"
+              style="width:150px"
+              clearable>
+      </el-input>
+      <el-input
+              placeholder="请输入用户昵称"
+              v-model="nickname"
+              size="medium"
+              style="width:150px"
+              clearable>
+      </el-input>
+
+      <el-select v-model="value" placeholder="请选择">
+        <el-option
+                v-for="item in fee"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+        </el-option>
+      </el-select>
+        <el-button type="primary" size="medium" @click="search">搜索</el-button>
+    </div>
+    <div>
+      <template>
+        <el-table
+          :data="tableData"
+          style="width: 100%"
+          max-height="1000">
+          <el-table-column
+            fixed
+            prop="id"
+            label="ID"
+            align="center">
+          </el-table-column>
+
+          <el-table-column
+            prop="nickname"
+            label="昵称"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="sex"
+            label="性别"
+            align="center">
+          </el-table-column>
+
+          <el-table-column
+            prop="avatar"
+            label="图片描述"
+            sortable
+            width="180">
+            <template slot-scope="scope">
+              <img  :src="scope.row.avatar" alt="" style="width: 50px;height: 50px">
+            </template>
+          </el-table-column>
+
+
+          <el-table-column
+            prop="sign"
+            label="签名"
+            align="center">
+          </el-table-column>
+
+          <el-table-column
+            prop="typeName"
+            label="会员等级"
+            align="center">
+          </el-table-column>
+
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center">
+            <template slot-scope="scope">
+              <el-button type="primary" size="small" @click="setUserVip(scope)" icon="el-icon-edit-outline">设置会员</el-button><br><br>
+              <el-button type="primary" size="small" v-if="scope.row.type == 3" @click="del(scope)" icon="el-icon-delete">取消终身会员</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template> 
+    </div>
+  </div>
+  <div class="page_tool">
+    <div class="page">共 <b v-text="{$count}"></b> 条记录{$page}</div>
+  </div>
+  
+    <div>
+      <el-dialog
+        :title="item.title"
+        :visible.sync="dialogVisible"
+        width="50%"
+        :before-close="handleClose">
+        <span>
+          <el-radio v-model="yf" label="1">赠送月数</el-radio>
+          <el-radio v-model="yf" label="2">终身会员</el-radio>
+
+          <el-input
+            type="hidden"
+            v-model="id"
+            clearable>
+          </el-input>
+          
+          <el-input
+            placeholder="请输入月数"
+            v-model="months"
+            width="50%"
+            clearable
+            v-if="yf != 2">
+          </el-input>
+        </span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+</div>
+<script type="text/javascript" src="/public/js/layer/layer.js"></script>
+<script>
+    new Vue({
+        el :"#app",
+        data() {
+          return {
+            tableData: {$list},
+            id: <?php echo intval($id) <= 0 ? "''" : (int)$id;?>,
+            mobile:"<?php echo empty($mobile) ? '' : $mobile;?>",
+            nickname:"<?php echo empty($nickname) ? '' : $nickname;?>",
+            dialogVisible:false,
+            months:"",
+            yf:0,
+            item:{
+              title: "",
+              doType: "set",
+              status:1,
+            },
+            value:<?php echo $_GET['value'] ? :0;?>,
+            fee: [{
+              value: 0,
+              label: '全部'
+            }, {
+              value: 1,
+              label: '付费会员'
+            },{
+              value: 2,
+              label: '未付费会员'
+            }],
+
+          }
+        },
+
+        methods: {
+          del(scope) {
+            let that = this;
+            let sid = scope['row']['id'];
+            this.$confirm('确定要取消终身会员的身份吗？, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              $.post("__URL__/unsetUserVip", {id:sid}, function(d){
+                if (d.ret == 202) {
+                  that.$message({
+                    type: 'info',
+                    message: d.msg
+                  });
+                } else {
+                  setInterval(function(){
+                    window.location.reload();
+                  },1000)
+                  that.$message({
+                    type: 'success',
+                    message: d.msg
+                  });
+                }
+              },"json")
+            }).catch(() => {
+              that.$message({
+                type: 'info',
+                message: '已取消设置'
+              });
+            });
+          },
+          search() {
+            let that = this;
+            var id = that.id;
+            var mobile = that.mobile;
+            var nickname = that.nickname;
+            var fee = that.value;
+            var url = "__URL__/index?1=1";
+            if (mobile != "" ) {
+              url += "&mobile="+mobile;
+            }
+
+            if (nickname != "" ) {
+              url += "&nickname="+nickname;
+            }
+
+            if (fee != "") {
+              url += "&value="+fee;
+            }
+
+            // alert(url);
+            location.href = url;
+          },
+
+          setUserVip(scope) {
+            let that = this;
+            // console.log(scope);
+            let sid = scope['row']['id'];
+            that.dialogVisible = true;
+            that.id = scope['row']['id'];
+            that.yf = 0,
+            that.months = "";
+            that.item = {
+              title: '设置猩听译会员',
+              doType: "set",
+              status:1,
+            };
+          },
+
+          submit(){
+            let that = this;
+            let data = {id:that.id, months:that.months, yf:that.yf};
+            $.post("__URL__/setUserVip", data, function(d){
+              if (d.ret == 200){
+                that.dialogVisible = false;
+                that.$message({message:d.msg, type:"success"});
+                setInterval(function(){
+                  window.location.reload();
+                },1000)
+              }else { 
+                that.$message({message:d.msg, type:"warning"});
+              }
+            },"json")
+          },
+
+          handleClose(done) {
+          this.$confirm('确认关闭？')
+            .then(_ => {
+              done();
+            })
+            .catch(_ => {});
+          }
+
+
+        }
+    })
+</script>
+
+
